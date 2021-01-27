@@ -16,5 +16,14 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "import/extensions": "off",
+        "no-param-reassign": "off"
+    },
+    "settings": {
+        "import/resolver": {
+          "node": {
+            "extensions": [".js", ".jsx", ".ts", ".tsx"]
+          }
+        }
     }
 }
