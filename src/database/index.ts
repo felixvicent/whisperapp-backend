@@ -9,7 +9,7 @@ class Database {
     this.init();
   }
 
-  init(): void {
+  init() {
     this.connection = new Sequelize.Sequelize(databaseConfig);
   }
 }

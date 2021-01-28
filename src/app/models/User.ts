@@ -17,11 +17,14 @@ class User extends Model {
   }
 }
 
-User.init({
-  name: Sequelize.STRING,
-  password: Sequelize.VIRTUAL,
-  password_hash: Sequelize.STRING,
-}, { sequelize: database.connection });
+User.init(
+  {
+    name: Sequelize.STRING,
+    password: Sequelize.VIRTUAL,
+    passwordHash: Sequelize.STRING,
+  },
+  { sequelize: database.connection }
+);
 
 User.addHook('beforeSave', async (user: User) => {
   if (user.password) {
