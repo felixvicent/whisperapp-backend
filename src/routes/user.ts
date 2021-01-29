@@ -1,9 +1,11 @@
 import express from 'express';
 
-import userController from '../app/controllers/UserController';
+import UserController from '../app/controllers/UserController';
+import SessionController from '../app/controllers/SessionController';
 
 const router = express.Router();
 
-router.post('/register', userController.store);
+router.post('/register', UserController.store);
+router.post('/authenticate', SessionController.store);
 
 module.exports = router;
