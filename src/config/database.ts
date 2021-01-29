@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('../bootstrap');
 
 module.exports = {
   database: process.env.DB_NAME,
@@ -7,6 +7,7 @@ module.exports = {
   dialect: process.env.DB_DIALECT,
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
+  storage: './src/__tests__/database.sqlite',
   define: {
     timestamps: true,
     underscored: true,
