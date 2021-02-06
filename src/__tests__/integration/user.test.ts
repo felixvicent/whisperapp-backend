@@ -4,9 +4,11 @@ import User from '../../app/models/User';
 
 import app from '../../app';
 
-beforeEach(() => User.truncate());
-
 describe('User', () => {
+  beforeEach(async () => {
+    await User.truncate();
+  });
+
   describe('Register', () => {
     it('Should be able to register', async () => {
       const response = await request(app)
@@ -25,7 +27,7 @@ describe('User', () => {
         .post('/users/register')
         .send({ name: 'Felps', password: '123456' });
 
-      expect(response.statusCode).toBe(400);
+      expect(response.status).toBe(400);
     });
   });
 
@@ -47,7 +49,7 @@ describe('User', () => {
         .post('/users/authenticate')
         .send({ name: 'Sophia', password: '123456' });
 
-      expect(response.statusCode).toBe(401);
+      expect(response.status).toBe(401);
     });
 
     it('Should be not able to authenticate with a wrong password', async () => {
@@ -59,7 +61,7 @@ describe('User', () => {
         .post('/users/authenticate')
         .send({ name: 'Felps', password: '654321' });
 
-      expect(response.statusCode).toBe(401);
+      expect(response.status).toBe(401);
     });
   });
 });

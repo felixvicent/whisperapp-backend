@@ -20,6 +20,7 @@
   },
   "exclude": [
     "./jest.config.js",
-    "./coverage/**/*.js"
+    "./coverage/**/*.js",
+    ".src/__tests__/**/*.ts"
   ]
 }
