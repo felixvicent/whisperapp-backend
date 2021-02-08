@@ -1,16 +1,19 @@
 import request from 'supertest';
 
 import app from '../../app';
-import User from '../../app/models/User';
-import Chat from '../../app/models/Chat';
 
-describe('Chat', () => {
+import Chat from '../../app/models/Chat';
+import User from '../../app/models/User';
+import Message from '../../app/models/Message';
+
+describe('Message', () => {
   beforeEach(async () => {
     await User.truncate();
     await Chat.truncate();
+    await Message.truncate();
   });
 
-  it('Should be able to list chats os a user', async () => {
+  it('Should be able to list messages of a chat', async () => {
     await request(app)
       .post('/users/register')
       .send({ name: 'Felps', password: '123456' });
@@ -27,19 +30,25 @@ describe('Chat', () => {
       .post('/users/authenticate')
       .send({ name: 'Sophia', password: '123456' });
 
-    await request(app)
+    const chat = await request(app)
       .post('/chats/create')
       .set({ Authorization: `Bearer ${user1.body.token}` })
       .send({ recipient_id: user2.body.user.id });
 
+    await request(app)
+      .post('/messages/create')
+      .set({ Authorization: `Bearer ${user1.body.token}` })
+      .send({ chatId: chat.body.id, text: 'Some text' });
+
     const response = await request(app)
-      .get('/chats/')
-      .set({ Authorization: `Bearer ${user1.body.token}` });
+      .post('/messages/')
+      .set({ Authorization: `Bearer ${user1.body.token}` })
+      .send({ chatId: chat.body.id });
 
     expect(response.body).toHaveLength(1);
   });
 
-  it('Should be able do create a chat', async () => {
+  it('Should be able to create a message', async () => {
     await request(app)
       .post('/users/register')
       .send({ name: 'Felps', password: '123456' });
@@ -56,40 +65,15 @@ describe('Chat', () => {
       .post('/users/authenticate')
       .send({ name: 'Sophia', password: '123456' });
 
-    const response = await request(app)
-      .post('/chats/create')
-      .set({ Authorization: `Bearer ${user1.body.token}` })
-      .send({ recipient_id: user2.body.user.id });
-
-    expect(response.body).toHaveProperty('id');
-  });
-
-  it('Should be able to open a already exist chat instead of create', async () => {
-    await request(app)
-      .post('/users/register')
-      .send({ name: 'Felps', password: '123456' });
-
-    await request(app)
-      .post('/users/register')
-      .send({ name: 'Sophia', password: '123456' });
-
-    const user1 = await request(app)
-      .post('/users/authenticate')
-      .send({ name: 'Felps', password: '123456' });
-
-    const user2 = await request(app)
-      .post('/users/authenticate')
-      .send({ name: 'Sophia', password: '123456' });
-
-    await request(app)
+    const chat = await request(app)
       .post('/chats/create')
       .set({ Authorization: `Bearer ${user1.body.token}` })
       .send({ recipient_id: user2.body.user.id });
 
     const response = await request(app)
-      .post('/chats/create')
+      .post('/messages/create')
       .set({ Authorization: `Bearer ${user1.body.token}` })
-      .send({ recipient_id: user2.body.user.id });
+      .send({ chatId: chat.body.id, text: 'Some text' });
 
     expect(response.body).toHaveProperty('id');
   });

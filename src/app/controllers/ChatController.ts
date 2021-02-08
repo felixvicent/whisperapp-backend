@@ -5,7 +5,18 @@ import Chat from '../models/Chat';
 
 class ChatController {
   async index(request: Request, response: Response) {
-    return response.status(200).json({});
+    const chats = await Chat.findAll({
+      where: {
+        [Op.or]: [
+          { user_id: request.userId },
+          { recipient_id: request.userId },
+        ],
+      },
+    });
+
+    if (!chats) response.json({});
+
+    response.json(chats);
   }
 
   async store(request: Request, response: Response) {
