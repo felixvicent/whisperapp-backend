@@ -9,6 +9,26 @@ describe('User', () => {
     await User.truncate();
   });
 
+  it('Should be able to list all users', async () => {
+    await request(app)
+      .post('/users/register')
+      .send({ name: 'Felps', password: '123456' });
+
+    const user = await request(app)
+      .post('/users/authenticate')
+      .send({ name: 'Felps', password: '123456' });
+
+    await request(app)
+      .post('/users/register')
+      .send({ name: 'Sophia', password: '123456' });
+
+    const response = await request(app)
+      .get('/users/')
+      .set({ Authorization: `Bearer ${user.body.token}` });
+
+    expect(response.body).toHaveLength(1);
+  });
+
   describe('Register', () => {
     it('Should be able to register', async () => {
       const response = await request(app)
